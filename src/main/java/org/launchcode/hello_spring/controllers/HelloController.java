@@ -7,49 +7,60 @@ import org.springframework.web.bind.annotation.*;
 @ResponseBody
 @RequestMapping("hello")
 public class HelloController {
-    // Handles request at path /hello
-//    @GetMapping("hello")
-//    @ResponseBody
-//    public String hello() {
-//        return "Hello, Spring!";
-//    }
+
     @GetMapping("goodbye") //now lives at /hello/goodbye
-        public String goodbye() {
+    public String goodbye() {
         return "Goodbye, Spring!";
     }
 
-    // Handles request of the form /hello?name=LaunchCode
-//    @GetMapping("hello")
-//    @PostMapping("hello")
+    @RequestMapping(method = {RequestMethod.GET, RequestMethod.POST}, value = "hello")
+    public String helloWithQueryParam(@RequestParam String name, @RequestParam String language) {
+        String properGreeting = HelloController.createMessage(name, language);
+        return "<h3 style=color:purple;>" + properGreeting + "</h3>";
+    }
 
-
-    //handles the request of the form instead of getmapping and postmapping, this does both
-//    @RequestMapping(method = {RequestMethod.GET, RequestMethod.POST}, value = "hello")
-
-    //now lives at /hello/hello
-    @RequestMapping(method = {RequestMethod.GET, RequestMethod.POST})
-        public String helloWithQueryParam(@RequestParam String name) {
+    @GetMapping("{name}")
+    public String helloWithPathParam(@PathVariable String name) {
         return "Hello, " + name + "!";
     }
 
-    // Handles requests of the form /hello/LaunchCode
-
-    @GetMapping("{name}")
-        public String helloWithPathParam(@PathVariable String name) {
-         return "Hello, " + name + "!";
-    }
-
-// now lives at /hello/form
     @GetMapping("form")
-        public String helloForm(){
+    public String helloForm() {
         return "<html>" +
                 "<body>" +
                 "<form action='hello' method='post'>" + // this submits the request to /hello
                 "<input type='text' name='name'>" +
+                "<select name='language'>" +
+                "<option value='English'>English</option>" +
+                "<option value='Italian'>Italian</option>" +
+                "<option value='French'>French</option>" +
+                "<option value='German'>German</option>" +
+                "<option value='Spanish'>Spanish</option>" +
+                "</select>" +
                 "<input type='submit' value='Greet me!'>" +
                 "</form>" +
                 "</body>" +
                 "</html>";
     }
 
+    public static String createMessage(String name, String language) {
+
+        if (language.equals("English")) {
+            return "Hello " + name;
+        } else if (language.equals("Italian")) {
+            return "Buongiorno " + name;
+        } else if (language.equals("French")) {
+            return "Bonjour " + name;
+        } else if (language.equals("German")) {
+            return "Guter Tag " + name;
+        } else if (language.equals("Spanish")) {
+            return "Hola " + name;
+        } else {
+            return "Hello";
+        }
+    }
 }
+
+
+
+
